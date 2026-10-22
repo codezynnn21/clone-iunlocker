@@ -10,7 +10,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cerrno>
-#include <zygisk.hpp>
+#include "zygisk.hpp"
 #include <android/log.h>
 #include <sys/system_properties.h>
 #include <dlfcn.h>
