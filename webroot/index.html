@@ -1,1 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iUnlocker GLTool</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div class="logo">iU</div>
+      <div>
+        <h1>iUnlocker GLTool</h1>
+        <p>GPU spoof · CODM hide · author zynn</p>
+      </div>
+      <span class="ver">v1.1.5-r1</span>
+    </header>
 
+    <section class="card">
+      <h2>GPU Spoof</h2>
+      <p class="hint">Overrides reported renderer, vendor, and version.</p>
+
+      <label>Renderer</label>
+      <input id="renderer" placeholder="Adreno (TM) 740" />
+
+      <label>Vendor</label>
+      <input id="vendor" placeholder="Qualcomm" />
+
+      <label>Version</label>
+      <input id="version" placeholder="OpenGL ES 3.2" />
+
+      <label>Shading Language</label>
+      <input id="shading" placeholder="OpenGL ES GLSL ES 3.20" />
+
+      <div class="presets">
+        <button class="chip" data-preset="adreno750">Adreno 750</button>
+        <button class="chip" data-preset="adreno740">Adreno 740</button>
+        <button class="chip" data-preset="adreno730">Adreno 730</button>
+        <button class="chip" data-preset="adreno725">Adreno 725</button>
+        <button class="chip" data-preset="adreno660">Adreno 660</button>
+        <button class="chip" data-preset="adreno650">Adreno 650</button>
+        <button class="chip" data-preset="adreno642">Adreno 642L</button>
+        <button class="chip" data-preset="adreno640">Adreno 640</button>
+        <button class="chip" data-preset="adreno630">Adreno 630</button>
+        <button class="chip" data-preset="adreno620">Adreno 620</button>
+        <button class="chip" data-preset="adreno619">Adreno 619</button>
+        <button class="chip" data-preset="adreno618">Adreno 618</button>
+        <button class="chip" data-preset="adreno616">Adreno 616</button>
+        <button class="chip" data-preset="adreno612">Adreno 612</button>
+        <button class="chip" data-preset="adreno610">Adreno 610</button>
+        <button class="chip" data-preset="maliG720">Mali-G720</button>
+        <button class="chip" data-preset="maliG715">Mali-G715</button>
+        <button class="chip" data-preset="maliG710">Mali-G710</button>
+        <button class="chip" data-preset="maliG78">Mali-G78</button>
+        <button class="chip" data-preset="maliG77">Mali-G77</button>
+        <button class="chip" data-preset="maliG76">Mali-G76</button>
+        <button class="chip" data-preset="maliG72">Mali-G72</button>
+        <button class="chip" data-preset="maliG57">Mali-G57</button>
+        <button class="chip" data-preset="maliG52">Mali-G52</button>
+        <button class="chip" data-preset="immortalis">Immortalis-G720</button>
+        <button class="chip" data-preset="xclipse940">Xclipse 940</button>
+        <button class="chip" data-preset="xclipse920">Xclipse 920</button>
+        <button class="chip" data-preset="powervr">PowerVR GE8320</button>
+        <button class="chip" data-preset="maleoon">Maleoon 910</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>RAM Spoof</h2>
+      <p class="hint">Reported total memory in GB.</p>
+      <label>Total RAM (GB)</label>
+      <input id="ram" type="number" min="2" max="24" step="1" placeholder="8" />
+      <div class="presets">
+        <button class="chip" data-ram="4">4 GB</button>
+        <button class="chip" data-ram="6">6 GB</button>
+        <button class="chip" data-ram="8">8 GB</button>
+        <button class="chip" data-ram="12">12 GB</button>
+        <button class="chip" data-ram="16">16 GB</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>CODM Hide</h2>
+      <div class="row">
+        <div>
+          <h3>Property Spoof</h3>
+          <p class="hint">ro.debuggable, ro.secure, verified boot.</p>
+        </div>
+        <label class="switch"><input type="checkbox" id="props" checked><span></span></label>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Path Denial</h3>
+          <p class="hint">Block su / Magisk / KSU paths.</p>
+        </div>
+        <label class="switch"><input type="checkbox" id="paths" checked><span></span></label>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="btn" id="saveBtn">Save</button>
+      <button class="btn primary" id="applyBtn">Apply</button>
+    </div>
+
+    <div class="status" id="status">idle</div>
+    <div class="toast" id="toast"></div>
+  </div>
+  <script src="assets/app.js"></script>
+</body>
+</html>
