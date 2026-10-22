@@ -1,0 +1,7 @@
+id=iunlocker_gltool_codm
+name=iUnlocker GLTool
+version=v1.1.5-r1
+versionCode=1001501
+author=zynn
+description=iUnlocker GLTool clone with CODM anti-cheat bypass hooks. Property spoof, open/openat path denial, and maps-filter skeleton for com.garena.game.codm.
+updateJson=
