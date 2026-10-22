@@ -7,11 +7,12 @@
  *   - /proc/self/maps read filter skeleton (drops lines containing zygisk/magisk/lsplt/hide)
  * Pair with DenyList or Shamiko. Vectors change per CODM build.
  */
+#include <sys/types.h>
+#include <sys/sysmacros.h>
+#include <jni.h>
 #include <zygisk.hpp>
 #include <android/log.h>
 #include <sys/system_properties.h>
-#include <sys/types.h>
-#include <sys/sysmacros.h>
 #include <dlfcn.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -74,7 +75,6 @@ static bool find_dev_inode(const char *lib_substr, dev_t *out_dev, ino_t *out_in
         if (!strstr(line, lib_substr)) continue;
         unsigned int major = 0, minor = 0;
         unsigned long inode = 0;
-        // start-end perms offset major:minor inode pathname
         if (sscanf(line, "%*x-%*x %*s %*x %x:%x %lu", &major, &minor, &inode) == 3) {
             *out_dev = makedev(major, minor);
             *out_inode = (ino_t)inode;
