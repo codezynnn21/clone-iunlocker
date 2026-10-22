@@ -10,9 +10,13 @@
 #include <zygisk.hpp>
 #include <android/log.h>
 #include <sys/system_properties.h>
+#include <sys/types.h>
+#include <sys/sysmacros.h>
 #include <dlfcn.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <cstdio>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -62,6 +66,26 @@ static int hook_open(const char *pathname, int flags, ...) {
     return -1;
 }
 
+static bool find_dev_inode(const char *lib_substr, dev_t *out_dev, ino_t *out_inode) {
+    FILE *f = fopen("/proc/self/maps", "r");
+    if (!f) return false;
+    char line[512];
+    while (fgets(line, sizeof(line), f)) {
+        if (!strstr(line, lib_substr)) continue;
+        unsigned int major = 0, minor = 0;
+        unsigned long inode = 0;
+        // start-end perms offset major:minor inode pathname
+        if (sscanf(line, "%*x-%*x %*s %*x %x:%x %lu", &major, &minor, &inode) == 3) {
+            *out_dev = makedev(major, minor);
+            *out_inode = (ino_t)inode;
+            fclose(f);
+            return true;
+        }
+    }
+    fclose(f);
+    return false;
+}
+
 class StrongHide : public zygisk::ModuleBase {
 public:
     void onLoad(Api *api, JNIEnv *env) override {
@@ -76,11 +100,29 @@ public:
             LOGI("specializing %s", nice);
         }
         if (nice) env->ReleaseStringUTFChars(args->nice_name, nice);
-        if (target) {
-            // Register PLT hooks before specialize completes
-            api->pltHookRegister(".*\\libandroid_runtime.so", "openat", (void *)hook_openat, (void **)&orig_openat);
-            api->pltHookRegister(".*\\libc.so", "open", (void *)hook_open, (void **)&orig_open);
-            api->pltHookCommit();
+        if (!target) return;
+
+        dev_t runtime_dev = 0, libc_dev = 0;
+        ino_t runtime_inode = 0, libc_inode = 0;
+
+        if (find_dev_inode("libandroid_runtime.so", &runtime_dev, &runtime_inode)) {
+            api->pltHookRegister(runtime_dev, runtime_inode, "openat",
+                                 (void *)hook_openat, (void **)&orig_openat);
+        } else {
+            LOGI("libandroid_runtime.so not found in maps");
+        }
+
+        if (find_dev_inode("libc.so", &libc_dev, &libc_inode)) {
+            api->pltHookRegister(libc_dev, libc_inode, "open",
+                                 (void *)hook_open, (void **)&orig_open);
+            api->pltHookRegister(libc_dev, libc_inode, "openat",
+                                 (void *)hook_openat, (void **)&orig_openat);
+        } else {
+            LOGI("libc.so not found in maps");
+        }
+
+        if (!api->pltHookCommit()) {
+            LOGI("pltHookCommit failed");
         }
     }
 
